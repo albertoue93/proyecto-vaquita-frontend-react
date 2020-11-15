@@ -1,6 +1,7 @@
 import React from 'react';
 import '../App.css';
 import axios from 'axios';
+import { GoogleLogin } from 'react-google-login';
 
 class Login extends React.Component {
     constructor() {
@@ -12,7 +13,15 @@ class Login extends React.Component {
 		};
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
-    }
+	}
+	
+	responseGoogle(response){
+		console.log(response)
+		console.log(response.profileObj.name)
+		console.log(response.profileObj.email)
+		console.log(response.profileObj.imageUrl);
+	
+	  }
     
     handleChange(event) {
 		const name = event.target.name;
@@ -72,6 +81,14 @@ class Login extends React.Component {
 						<div className="form-item">
 							<input type='submit' className='btn btn-block btn-primary' value='Iniciar Sesión' />
 						</div>
+						{' '}
+						<GoogleLogin
+							clientId="526770419242-tnc3au4etabfnpi5jg77640l5hg69mb8.apps.googleusercontent.com"
+							buttonText="Ingresar con Google"
+							onSuccess={this.responseGoogle}
+							onFailure={this.responseGoogle}
+							cookiePolicy={'single_host_origin'}
+						/>
 					</form>	
 				}
                 </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import { HashRouter, Route, Switch,Link, Redirect } from 'react-router-dom';
+import { HashRouter, Route, Switch, NavLink, Link, Redirect } from 'react-router-dom';
 import Home from './components/Home';
 import Clients from './components/Home';
 import Login from './components/Login';
@@ -125,9 +125,9 @@ class App extends React.Component {
                 :
               <ul className="navbar-nav">
                 <li className="nav-item">
-                  <Link className="nav-link" exact activeClassName="active" to="/login">
+                  <NavLink className="nav-link" exact activeClassName="active" to="/login">
                     Inicio de Sesión
-                    </Link>
+                    </NavLink>
                 </li>	
               </ul>
             }
