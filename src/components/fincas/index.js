@@ -23,13 +23,11 @@ export default class Finca extends Component {
                 this.setState({
                     fincas: response.data.data ? response.data.data : [],
                 });
-                
-                    if(response.data.status === "failed" && response.data.success === false){
-                        this.setState({
-                            noDataFound : response.data.message,
-                        });
-                    }
-                
+                if(response.data.status === "failed" && response.data.success === false){
+                    this.setState({
+                        noDataFound : response.data.message,
+                    });
+                }
             }
         });
     }
