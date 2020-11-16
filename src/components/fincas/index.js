@@ -1,7 +1,6 @@
 import React , { Component } from 'react'
 import {Table, Button} from 'reactstrap'
 import axios from "axios";
-import AddFinca from './addFincas'
 
 export default class Finca extends Component {
     constructor(props){
@@ -24,13 +23,13 @@ export default class Finca extends Component {
                 this.setState({
                     fincas: response.data.data ? response.data.data : [],
                 });
-                {
+                
                     if(response.data.status === "failed" && response.data.success === false){
                         this.setState({
                             noDataFound : response.data.message,
                         });
                     }
-                }
+                
             }
         });
     }
