@@ -2,8 +2,8 @@ import React from 'react';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { HashRouter, Route, Switch, NavLink, Link, Redirect } from 'react-router-dom';
 import Home from './components/Home';
-import Clients from './components/Home';
 import Login from './components/Login';
+import Finca from './components/fincas/index'
 import axios from 'axios';
 import * as PropTypes from 'prop-types'
 
@@ -62,7 +62,7 @@ class App extends React.Component {
 					<Switch>
 						<Route exact path='/' component={Home} />
 						<Route exact path='/login' render={(props) => <Login authenticate={this.authenticate} isAuthenticated={this.state.isAuthenticated} {...props} />} />
-						<PrivateRoute exact path='/' component={Clients} isAuthenticated={this.state.isAuthenticated} token={this.state.token} refresh={this.refresh} />
+						<PrivateRoute exact path='/finca' component={Finca} isAuthenticated={this.state.isAuthenticated} token={this.state.token} refresh={this.refresh} />
 					</Switch>
 				</div>
 			</HashRouter>
@@ -78,7 +78,11 @@ class App extends React.Component {
                 <Redirect to={{
                     pathname: '/login',
                     state: { from: props.location }
-                }} />
+                }} />,
+                <Redirect to={{
+                  pathname: '/finca',
+                  state: { from: props.location }
+              }} />
             )
         )} />
     );
@@ -97,7 +101,7 @@ class App extends React.Component {
             props.isAuthenticated ?
             <ul className="navbar-nav">
                 <li className="nav-item">
-                  <Link className="nav-link" to="/">
+                  <Link className="nav-link" to="/finca">
                         Fincas
                   </Link>
                 </li>

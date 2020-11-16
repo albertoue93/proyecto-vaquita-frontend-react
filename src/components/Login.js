@@ -43,6 +43,9 @@ class Login extends React.Component {
 		})
 		.catch((error) => {
 			console.log(error);
+			if (error.response.status === 401) {
+				this.setState({ error: 'Username or password not recognised.' });
+			}
 		});
     }
     
@@ -81,7 +84,7 @@ class Login extends React.Component {
 						<div className="form-item">
 							<input type='submit' className='btn btn-block btn-primary' value='Iniciar Sesión' />
 						</div>
-						{' '}
+						<hr></hr>
 						<GoogleLogin
 							clientId="526770419242-tnc3au4etabfnpi5jg77640l5hg69mb8.apps.googleusercontent.com"
 							buttonText="Ingresar con Google"
