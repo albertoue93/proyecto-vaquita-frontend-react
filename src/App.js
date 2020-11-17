@@ -4,6 +4,7 @@ import { HashRouter, Route, Switch, NavLink, Link, Redirect } from 'react-router
 import Home from './components/Home';
 import Login from './components/Login';
 import Finca from './components/fincas/index'
+import Animal from './components/animales/index'
 import axios from 'axios';
 import * as PropTypes from 'prop-types'
 
@@ -20,11 +21,11 @@ class App extends React.Component {
     }
     
     componentDidMount() {
-		const lsToken = localStorage.getItem('jwt'); 
-		if (lsToken) {
-			this.authenticate(lsToken);
-		} 
-	}
+      const lsToken = localStorage.getItem('jwt'); 
+      if (lsToken) {
+        this.authenticate(lsToken);
+      } 
+    }
 
 	authenticate(token) {
 		this.setState({
@@ -34,7 +35,7 @@ class App extends React.Component {
 		localStorage.setItem('jwt', token);
 	}
 
-	logout() {
+	logout = async() => {
 		this.setState({
 			isAuthenticated: false,
 			token: null
@@ -54,21 +55,22 @@ class App extends React.Component {
 			console.log('Error!', error);
 		});
 	}
-	render() {
-		return (
-			<HashRouter>
-				<div>
-					<Menu isAuthenticated={this.state.isAuthenticated} logout={this.logout} />
-					<Switch>
-						<Route exact path='/' component={Home} />
-						<Route exact path='/login' render={(props) => <Login authenticate={this.authenticate} isAuthenticated={this.state.isAuthenticated} {...props} />} />
-						<PrivateRoute exact path='/finca' component={Finca} isAuthenticated={this.state.isAuthenticated} token={this.state.token} refresh={this.refresh} />
-					</Switch>
-				</div>
-			</HashRouter>
-		);
-	}
-} 
+    render() {
+      return (
+        <HashRouter>
+          <div>
+            <Menu isAuthenticated={this.state.isAuthenticated} logout={this.logout} />
+            <Switch>
+              <Route exact path='/' component={Home} />
+              <Route exact path='/login' render={(props) => <Login authenticate={this.authenticate} isAuthenticated={this.state.isAuthenticated} {...props} />} />
+              <PrivateRoute exact path='/finca' component={Finca} isAuthenticated={this.state.isAuthenticated} token={this.state.token} refresh={this.refresh} />
+              <PrivateRoute exact path='/animal' component={Animal} isAuthenticated={this.state.isAuthenticated} token={this.state.token} refresh={this.refresh} />
+            </Switch>
+          </div>
+        </HashRouter>
+      );
+    }
+  } 
 
     const PrivateRoute = ({ component: Component, isAuthenticated, token, ...rest }) => (
         <Route {...rest} render={props => (
@@ -78,11 +80,7 @@ class App extends React.Component {
                 <Redirect to={{
                     pathname: '/login',
                     state: { from: props.location }
-                }} />,
-                <Redirect to={{
-                  pathname: '/finca',
-                  state: { from: props.location }
-              }} />
+                }} />
             )
         )} />
     );
@@ -106,7 +104,7 @@ class App extends React.Component {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/">
+                  <Link className="nav-link" to="/animal">
                         Animales
                   </Link>
                 </li>
@@ -121,7 +119,7 @@ class App extends React.Component {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" href="#" onClick={props.logout}>
+                  <Link className="nav-link" href="#" onClick={() => props.logout()}>
                         Cerrar Sesión
                   </Link>
                 </li>
