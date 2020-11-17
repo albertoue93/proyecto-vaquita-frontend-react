@@ -2,6 +2,7 @@ import React from 'react';
 import '../App.css';
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
+import { Redirect } from 'react-router-dom';
 
 class Login extends React.Component {
     constructor() {
@@ -40,6 +41,7 @@ class Login extends React.Component {
 			this.setState({ error: '' });
 			const token = response.data.token;
 			this.props.authenticate(token);
+			this.props.history.push("/login");
 		})
 		.catch((error) => {
 			console.log(error);
@@ -50,6 +52,11 @@ class Login extends React.Component {
     }
     
     render() {
+		if (this.props.isAuthenticated && this.props.location.state !== undefined) {
+			return (
+				<Redirect to={this.props.location.state.from} />
+			);
+		}
 		return (
 			<div  className="login-container">
                 <div className="login-content">
