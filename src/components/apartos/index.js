@@ -3,6 +3,7 @@ import Alert from 'react-s-alert';
 import {Table, Button} from 'reactstrap'
 import axios from "axios";
 import AddAparto from './addAparto';
+import EditAparto from './editAparto';
 
 export default class Aparto extends Component {
     constructor(props){
@@ -17,6 +18,13 @@ export default class Aparto extends Component {
             isLoading: false,
             status: "",
             newApartoModal: false,
+            editApartoData: {
+                id: "",
+                numeroAparto: "",
+                mts2: "",
+                finca_id: ""
+            },
+            editApartoModal: false,
             noDataFound: "",
         }
     }
@@ -91,6 +99,60 @@ export default class Aparto extends Component {
           });
       };
 
+      toggleEditApartoModal = () => {
+        this.setState({
+          editApartoModal: !this.state.editApartoModal,
+        });
+      };
+
+      onChangeEditApartoHanler = (e) => {
+        let { editApartoData } = this.state;
+        editApartoData[e.target.name] = e.target.value;
+        this.setState({ editApartoData });
+      };      
+
+      editAparto = (id, numeroAparto, mts2, finca_id) => {
+        this.setState({
+          editApartoData: { id, numeroAparto, mts2, finca_id },
+          editApartoModal: !this.state.editApartoModal,
+        });
+      };
+
+      updateAparto = () => {
+        let {
+          id,
+          numeroAparto, 
+          mts2, 
+          finca_id,
+        } = this.state.editApartoData;
+        this.setState({
+          isLoading: true,
+        });
+        axios({
+          method: 'POST',
+          url: `http://localhost:8000/api/aparto/store`,
+          headers: {
+              "Authorization": "bearer "+localStorage.getItem('jwt')
+          }, 
+          data: {
+            numeroAparto,mts2,finca_id,id
+          },
+          })
+          .then((response) => {
+            this.setState({
+              editApartoModal: false,
+              editApartoData: { numeroAparto, mts2, finca_id },
+              isLoading:false,
+            });
+            this.getApartos();
+            Alert.success("Aparto se modificó exitosamente!")
+          })
+          .catch((error) => {
+            this.setState({isLoading:false})
+            console.log(error.response);
+          });
+      };      
+
       deleteAparto = async(id) => {
         this.setState({
           isLoading: true,
@@ -117,7 +179,7 @@ export default class Aparto extends Component {
       };
     
   render() {
-    const { newApartoData, noDataFound, apartos} = this.state;
+    const { newApartoData, editApartoData, noDataFound, apartos} = this.state;
       let apartoDetails = [];
       if (apartos.length) {
         apartoDetails = apartos.map((aparto) => {
@@ -132,6 +194,13 @@ export default class Aparto extends Component {
                   color="success"
                   className="mr-3"
                   size="sm"
+                  onClick={() =>
+                    this.editAparto(
+                      aparto.id,
+                      aparto.numeroAparto,
+                      aparto.mts2,
+                      aparto.finca_id
+                    )}
                 >
                   Editar
                 </Button>
@@ -157,6 +226,14 @@ export default class Aparto extends Component {
                 onChangeAddApartoHandler={this.onChangeAddApartoHandler}
                 addAparto={this.addAparto}
                 newApartoData={newApartoData}
+          />
+          <EditAparto
+                toggleEditApartoModal={this.toggleEditApartoModal}
+                editApartoModal={this.state.editApartoModal}
+                onChangeEditApartoHanler={this.onChangeEditApartoHanler}
+                editAparto={this.editAparto}
+                editApartoData={editApartoData}
+                updateAparto={this.updateAparto}
           />
         <Table>
           <thead>
