@@ -1,6 +1,7 @@
 import React from 'react';
 import '../App.css';
 import axios from 'axios';
+import Alert from 'react-s-alert';
 import { GoogleLogin } from 'react-google-login';
 import { Redirect } from 'react-router-dom';
 
@@ -41,6 +42,7 @@ class Login extends React.Component {
 			this.setState({ error: '' });
 			const token = response.data.token;
 			this.props.authenticate(token);
+			Alert.success("You're successfully logged in!");
 			this.props.history.push("/login");
 		})
 		.catch((error) => {
@@ -93,7 +95,7 @@ class Login extends React.Component {
 						</div>
 						<hr></hr>
 						<GoogleLogin
-							clientId="526770419242-tnc3au4etabfnpi5jg77640l5hg69mb8.apps.googleusercontent.com"
+							clientId="526770419242-9j8gt35vmf5cl8t65ui0gdhsnn87ekkl.apps.googleusercontent.com"
 							buttonText="Ingresar con Google"
 							onSuccess={this.responseGoogle}
 							onFailure={this.responseGoogle}

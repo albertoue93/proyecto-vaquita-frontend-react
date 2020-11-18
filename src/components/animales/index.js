@@ -1,4 +1,5 @@
-import React , { Component } from 'react'
+import React , { Component } from 'react';
+import Alert from 'react-s-alert';
 import {Table, Button} from 'reactstrap'
 import axios from "axios";
 import AddAnimal from './addAnimal';
@@ -90,7 +91,8 @@ export default class Animal extends Component {
                   finca_id: ""
                 },
               },
-              () => this.getAnimales()
+              () => this.getAnimales(),
+              Alert.success("Animal se guardó exitosamente!")
             );
           });
       };
@@ -111,6 +113,7 @@ export default class Animal extends Component {
               isLoading: false,
             });
             this.componentDidMount()
+            Alert.error("Animal se eliminó exitosamente!")
           })
           .catch((error) => {
             this.setState({

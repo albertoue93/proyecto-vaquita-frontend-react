@@ -1,4 +1,5 @@
 import React , { Component } from 'react'
+import Alert from 'react-s-alert';
 import {Table, Button} from 'reactstrap'
 import axios from "axios";
 import AddFincas from './addFincas';
@@ -86,7 +87,8 @@ export default class Finca extends Component {
                   nombreFinca: "",
                 },
               },
-              () => this.getFincas()
+              () => this.getFincas(),
+              Alert.success("Finca se guardó exitosamente!")
             );
           });
       };
@@ -156,6 +158,7 @@ export default class Finca extends Component {
               isLoading: false,
             });
             this.componentDidMount()
+            Alert.error("Finca se eliminó exitosamente!")
           })
           .catch((error) => {
             this.setState({

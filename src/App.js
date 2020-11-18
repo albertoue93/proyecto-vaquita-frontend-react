@@ -1,4 +1,7 @@
 import React from 'react';
+import Alert from 'react-s-alert';
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { HashRouter, Route, Switch, NavLink, Link, Redirect } from 'react-router-dom';
 import Home from './components/Home';
@@ -38,9 +41,10 @@ class App extends React.Component {
 	logout = async() => {
 		this.setState({
 			isAuthenticated: false,
-			token: null
+			token: null,
     });
     localStorage.removeItem('jwt');
+    Alert.success("You're safely logged out!");
 	}
 
 	refresh() {
@@ -135,6 +139,9 @@ class App extends React.Component {
             }
           </ul>
         </div>
+        <Alert stack={{limit: 3}} 
+          timeout = {3000}
+          position='top-right' effect='slide' offset={65} />
       </nav>
     );
 App.propTypes = {
