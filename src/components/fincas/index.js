@@ -126,15 +126,18 @@ export default class Finca extends Component {
           headers: {
               "Authorization": "bearer "+localStorage.getItem('jwt')
           }, 
-          nombreFinca,id,
+          data: {
+            nombreFinca,id
+          },
           })
           .then((response) => {
-            this.getFincas();
             this.setState({
               editFincaModal: false,
               editFincaData: { nombreFinca },
               isLoading:false,
             });
+            this.getFincas();
+            Alert.success("Finca se modificó exitosamente!")
           })
           .catch((error) => {
             this.setState({isLoading:false})
@@ -214,7 +217,7 @@ export default class Finca extends Component {
           />
           <EditFinca
                 toggleEditFincaModal={this.toggleEditFincaModal}
-                editFincaModal={this.editFincaModal}
+                editFincaModal={this.state.editFincaModal}
                 onChangeEditFincaHanler={this.onChangeEditFincaHanler}
                 editFinca={this.editFinca}
                 editFincaData={editFincaData}

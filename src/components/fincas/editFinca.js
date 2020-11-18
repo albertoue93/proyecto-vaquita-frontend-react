@@ -36,7 +36,7 @@ export default class editFinca extends Component {
           <ModalFooter>
             <Button 
               color="primary" 
-              onClick={this.props.updateFinca}
+              onClick={() => this.props.updateFinca()}
             >
               Update
             </Button>
