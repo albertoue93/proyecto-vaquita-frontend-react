@@ -19,11 +19,11 @@ export default class editFinca extends Component {
           toggle={this.props.toggleEditFincaModal}
         >
           <ModalHeader toggle={this.props.toggleEditFincaModal}>
-            Update Finca
+            Editar Finca
           </ModalHeader>
           <ModalBody>
             <FormGroup>
-              <Label for="first_name">Nombre</Label>
+              <Label for="nombreFinca">Nombre</Label>
               <Input
                 id="nombreFinca"
                 name="nombreFinca"
@@ -38,7 +38,7 @@ export default class editFinca extends Component {
               color="primary" 
               onClick={() => this.props.updateFinca()}
             >
-              Update
+              Editar
             </Button>
             <Button
               color="secondary"
