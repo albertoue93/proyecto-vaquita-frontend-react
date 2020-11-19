@@ -66,6 +66,7 @@ export default class addAnimal extends Component {
                 />
               </FormGroup>
               <FormGroup>
+                
                 <Label for="foto">Foto</Label>
                 <Input
                   id="foto"

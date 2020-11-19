@@ -32,6 +32,7 @@ export default class Animal extends Component {
             },
             editFincaModal: false,
             noDataFound: "",
+            imagePreviewUrl: false,
         }
     }
 
@@ -69,7 +70,22 @@ export default class Animal extends Component {
           newAnimalModal: !this.state.newAnimalModal,
         });
       };
-
+      onChange(e) {
+        let files = e.target.files || e.dataTransfer.files;
+        if (!files.length)
+        return;
+        this.createImage(files[0]);
+        }
+        createImage(file) {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+        this.setState({
+        image: e.target.result
+        })
+        };
+        reader.readAsDataURL(file);
+        }
+        
     onChangeAddAnimalHandler = (e) => {
         let { newAnimalData } = this.state;
         newAnimalData[e.target.name] = e.target.value;
