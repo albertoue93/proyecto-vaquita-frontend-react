@@ -14,6 +14,12 @@ export default class addFincas extends Component {
     render() {
       return (
         <div>
+          <Button 
+            className="float-left mb-4"
+            color="danger" 
+            onClick={this.props.deleteFincaCheck}>
+              Eliminar Finca(s) Seleccionada(s)
+          </Button>
           <Button
             className="float-right mb-4"
             color="primary"

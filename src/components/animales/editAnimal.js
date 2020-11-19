@@ -19,28 +19,10 @@ export default class editAnimal extends Component {
           toggle={this.props.toggleEditFincaModal}
         >
           <ModalHeader toggle={this.props.toggleEditFincaModal}>
-            Editar Animal
+            Editar Animal {this.props.editFincaData.raza}
           </ModalHeader>
           <ModalBody>
-            <FormGroup>
-              <Label for="numeroAnimal">Numero animal</Label>
-              <Input
-                id="numeroAnimal"
-                name="numeroAnimal"
-                value={this.props.editFincaData.numeroAnimal}
-                onChange={this.props.onChangeEditFincaHanler}
-              />
-            </FormGroup>
 
-            <FormGroup>
-              <Label for="raza">Raza</Label>
-              <Input
-                id="raza"
-                name="raza"
-                value={this.props.editFincaData.raza}
-                onChange={this.props.onChangeEditFincaHanler}
-              />
-            </FormGroup>
             <FormGroup>
               <Label for="peso">Peso</Label>
               <Input
@@ -65,16 +47,6 @@ export default class editAnimal extends Component {
                 id="foto"
                 name="foto"
                 value={this.props.editFincaData.foto}
-                onChange={this.props.onChangeEditFincaHanler}
-              />
-            </FormGroup>
-            
-            <FormGroup>
-              <Label for="finca_id">ID Finca</Label>
-              <Input
-                id="finca_id"
-                name="finca_id"
-                value={this.props.editFincaData.finca_id}
                 onChange={this.props.onChangeEditFincaHanler}
               />
             </FormGroup>

@@ -229,7 +229,8 @@ export default class Animal extends Component {
               <td>{animal.peso}</td>
               <td>{animal.edad}</td>
               <td>{animal.foto}</td>
-              <th>{animal.finca_id}</th>
+              <td>{animal.finca_id}</td>
+              <td>{animal.estado}</td>
               <td>
                 <Button
                   color="success"
@@ -279,7 +280,7 @@ export default class Animal extends Component {
                 editFincaData={editFincaData}
                 updateFinca={this.updateFinca}
           />
-        <Table>
+        <Table bordered size="sm" responsive>
           <thead>
             <tr>
               <th>#</th>
@@ -289,6 +290,7 @@ export default class Animal extends Component {
               <th>Edad</th>
               <th>Foto</th>
               <th>Finca</th>
+              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>

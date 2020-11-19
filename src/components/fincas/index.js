@@ -10,6 +10,7 @@ export default class Finca extends Component {
         super(props);
         this.state = {
             fincas: [],
+            checkedBoxes: [],
             newFincaData: {
               nombreFinca: "",
             },
@@ -169,15 +170,56 @@ export default class Finca extends Component {
             });
           });
       };
+
+      toggleCheckbox = (e, finca) => {		
+        if(e.target.checked) {
+          let arr = this.state.checkedBoxes;
+          arr.push(finca.id);
+          
+          this.setState = { checkedBoxes: arr};
+        } else {			
+          let fincas = this.state.checkedBoxes.splice(this.state.checkedBoxes.indexOf(finca.id), 1);
+          
+          this.setState = {
+            checkedBoxes: fincas
+          }
+        }		
+        console.log(this.state.checkedBoxes);
+      }
+
+      deleteFincaCheck = async() => {
+        await axios({
+            method: 'DELETE',
+            url: `http://localhost:8000/api/fincas/bulk-delete/`,
+            data: {'ids' : this.state.checkedBoxes},
+            headers: {
+                "Authorization": "bearer "+localStorage.getItem('jwt')
+            } 
+        })
+          .then((response) => {
+            if(response.status === 200) {
+            //this.getApartos()
+            window.location.reload(false);
+            }
+            Alert.error("Finca(s) se eliminó exitosamente!")
+          })
+          .catch((error) => {
+            Alert.error("Debe seleccionar al menos una Finca")
+            console.log(error)
+          });
+      };
     
   render() {
     const { newFincaData, editFincaData, noDataFound, fincas} = this.state;
       let fincasDetails = [];
       if (fincas.length) {
-        fincasDetails = fincas.map((finca) => {
+        fincasDetails = fincas.map((finca, index) => {
           return (
-            <tr key={finca.id}>
-              <td>{finca.id}</td>
+            <tr key={index} className={(index % 2) ? "odd_col" : "even_col"}>
+              <td>
+              <input type="checkbox" className="selectsingle" value="{finca.id}" checked={this.state.checkedBoxes.find((p) => p.id === finca.id)} onChange={(e) => this.toggleCheckbox(e, finca)}/>
+									  &nbsp;&nbsp;{finca.id}
+              </td>
               <td>{finca.nombreFinca}</td>
               <td>
                 <Button
@@ -214,6 +256,7 @@ export default class Finca extends Component {
                 onChangeAddFincaHandler={this.onChangeAddFincaHandler}
                 addFinca={this.addFinca}
                 newFincaData={newFincaData}
+                deleteFincaCheck={this.deleteFincaCheck}
           />
           <EditFinca
                 toggleEditFincaModal={this.toggleEditFincaModal}
@@ -223,7 +266,7 @@ export default class Finca extends Component {
                 editFincaData={editFincaData}
                 updateFinca={this.updateFinca}
           />
-        <Table>
+        <Table bordered size="sm" responsive>
           <thead>
             <tr>
               <th>#</th>
