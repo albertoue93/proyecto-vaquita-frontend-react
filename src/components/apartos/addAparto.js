@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from 'axios';
 import {
   Button,
   Modal,
@@ -11,9 +12,30 @@ import {
 } from "reactstrap";
 
 export default class addAparto extends Component {
+  state = {
+    fincas: [],
+  }
+  componentDidMount(){
+    axios({
+      method: 'GET',
+      url: `http://localhost:8000/api/fincas`,
+      headers: {
+          "Authorization": "bearer "+localStorage.getItem('jwt')
+      }
+    })
+    .then((response) => {
+      this.setState({fincas: response.data.data})
+    })
+  }
     render() {
       return (
         <div>
+          <Button 
+            className="float-left mb-4"
+            color="danger" 
+            onClick={this.props.deleteApartoCheck}>
+              Eliminar Aparto(s) Seleccionado(s)
+          </Button>
           <Button
             className="float-right mb-4"
             color="primary"
@@ -48,13 +70,17 @@ export default class addAparto extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <Label for="finca_id">Finca</Label>
-                <Input
-                  id="finca_id"
-                  name="finca_id"
-                  value={this.props.newApartoData.finca_id}
-                  onChange={this.props.onChangeAddApartoHandler}
-                />
+              <Label for="finca_id">Finca</Label>
+                <Input type="select" 
+                name="finca_id" 
+                id="finca_id" 
+                value={this.props.newApartoData.finca_id}
+                onChange={this.props.onChangeAddApartoHandler}>
+                  <option>Selecciones una Finca</option>
+                  {this.state.fincas.map(item=>(
+                    <option key={item.id} value={item.id}>{item.nombreFinca}</option>
+                  ))}
+                </Input>
               </FormGroup>
             </ModalBody>
             <ModalFooter>

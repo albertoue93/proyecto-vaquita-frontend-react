@@ -3,6 +3,7 @@ import Alert from 'react-s-alert';
 import {Table, Button} from 'reactstrap'
 import axios from "axios";
 import AddAnimal from './addAnimal';
+import EditAnimal from './editAnimal';
 
 export default class Animal extends Component {
     constructor(props){
@@ -20,7 +21,18 @@ export default class Animal extends Component {
             isLoading: false,
             status: "",
             newAnimalModal: false,
+            editFincaData: {
+                id: "",
+              numeroAnimal: "",
+              raza: "",
+              peso: "",
+              edad: "",
+              foto: "",
+              finca_id: ""
+            },
+            editFincaModal: false,
             noDataFound: "",
+            imagePreviewUrl: false,
         }
     }
 
@@ -58,7 +70,22 @@ export default class Animal extends Component {
           newAnimalModal: !this.state.newAnimalModal,
         });
       };
-
+      onChange(e) {
+        let files = e.target.files || e.dataTransfer.files;
+        if (!files.length)
+        return;
+        this.createImage(files[0]);
+        }
+        createImage(file) {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+        this.setState({
+        image: e.target.result
+        })
+        };
+        reader.readAsDataURL(file);
+        }
+        
     onChangeAddAnimalHandler = (e) => {
         let { newAnimalData } = this.state;
         newAnimalData[e.target.name] = e.target.value;
@@ -121,9 +148,76 @@ export default class Animal extends Component {
             });
           });
       };
+      toggleEditFincaModal = () => {
+        this.setState({
+          editFincaModal: !this.state.editFincaModal,
+        });
+      };
+
+      onChangeEditFincaHanler = (e) => {
+        let { editFincaData } = this.state;
+        editFincaData[e.target.name] = e.target.value;
+        this.setState({ editFincaData });
+      };
+      editFinca = (id,numeroAnimal,raza,peso,edad,foto,finca_id) => {
+        this.setState({
+          editFincaData: { id,numeroAnimal,raza,peso,edad,foto,finca_id },
+          editFincaModal: !this.state.editFincaModal,
+        });
+      };
+
+      updateFinca = () => {
+        let {
+          id,
+          numeroAnimal,
+          raza,
+          peso,
+          edad,
+          foto,
+          finca_id,
+
+        } = this.state.editFincaData;
+        this.setState({
+          isLoading: true,
+        });
+        axios({
+          method: 'POST',
+          url: `http://localhost:8000/api/animal/store`,
+          headers: {
+              "Authorization": "bearer "+localStorage.getItem('jwt')
+          }, 
+          data: {
+          numeroAnimal,
+          raza,
+          peso,
+          edad,
+          foto,
+          finca_id,
+          id
+          },
+          })
+          .then((response) => {
+            this.setState({
+              editFincaModal: false,
+              editFincaData: {numeroAnimal,
+                raza,
+                peso,
+                edad,
+                foto,
+                finca_id},
+              isLoading:false,
+            });
+            this.getAnimales();
+            Alert.success("Finca se modificó exitosamente!")
+          })
+          .catch((error) => {
+            this.setState({isLoading:false})
+            console.log(error.response);
+          });
+      };
     
   render() {
-    const { newAnimalData, noDataFound, animales} = this.state;
+    const { newAnimalData,editFincaData, noDataFound, animales} = this.state;
       let animalDetails = [];
       if (animales.length) {
         animalDetails = animales.map((animal) => {
@@ -135,12 +229,23 @@ export default class Animal extends Component {
               <td>{animal.peso}</td>
               <td>{animal.edad}</td>
               <td>{animal.foto}</td>
-              <th>{animal.finca_id}</th>
+              <td>{animal.finca_id}</td>
+              <td>{animal.estado}</td>
               <td>
                 <Button
                   color="success"
                   className="mr-3"
                   size="sm"
+                  onClick={() =>
+                    this.editFinca(
+                      animal.id,
+                      animal.numeroAnimal,
+                      animal.raza,
+                      animal.peso,
+                      animal.edad,
+                      animal.foto,
+                      animal.finca_id
+                    )}
                 >
                   Editar
                 </Button>
@@ -167,7 +272,15 @@ export default class Animal extends Component {
                 addAnimal={this.addAnimal}
                 newAnimalData={newAnimalData}
           />
-        <Table>
+          <EditAnimal
+                toggleEditFincaModal={this.toggleEditFincaModal}
+                editFincaModal={this.state.editFincaModal}
+                onChangeEditFincaHanler={this.onChangeEditFincaHanler}
+                editFinca={this.editFinca}
+                editFincaData={editFincaData}
+                updateFinca={this.updateFinca}
+          />
+        <Table bordered size="sm" responsive>
           <thead>
             <tr>
               <th>#</th>
@@ -177,6 +290,7 @@ export default class Animal extends Component {
               <th>Edad</th>
               <th>Foto</th>
               <th>Finca</th>
+              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>

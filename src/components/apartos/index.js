@@ -10,6 +10,7 @@ export default class Aparto extends Component {
         super(props);
         this.state = {
             apartos: [],
+            checkedBoxes: [],
             newApartoData: {
               numeroAparto: "",
               mts2: "",
@@ -177,18 +178,59 @@ export default class Aparto extends Component {
             });
           });
       };
+
+      toggleCheckbox = (e, aparto) => {		
+        if(e.target.checked) {
+          let arr = this.state.checkedBoxes;
+          arr.push(aparto.id);
+          
+          this.setState = { checkedBoxes: arr};
+        } else {			
+          let apartos = this.state.checkedBoxes.splice(this.state.checkedBoxes.indexOf(aparto.id), 1);
+          
+          this.setState = {
+            checkedBoxes: apartos
+          }
+        }		
+        console.log(this.state.checkedBoxes);
+      }
+
+      deleteApartoCheck = async() => {
+        await axios({
+            method: 'DELETE',
+            url: `http://localhost:8000/api/aparto/bulk-delete/`,
+            data: {'ids' : this.state.checkedBoxes},
+            headers: {
+                "Authorization": "bearer "+localStorage.getItem('jwt')
+            } 
+        })
+          .then((response) => {
+            if(response.status === 200) {
+            //this.getApartos()
+            window.location.reload(false);
+            }
+            Alert.error("Aparto(s) se eliminó exitosamente!")
+          })
+          .catch((error) => {
+            console.log(error)
+            Alert.error("Debe seleccionar al menos un Aparto")
+          });
+      };
     
   render() {
     const { newApartoData, editApartoData, noDataFound, apartos} = this.state;
       let apartoDetails = [];
       if (apartos.length) {
-        apartoDetails = apartos.map((aparto) => {
+        apartoDetails = apartos.map((aparto, index) => {
           return (
-            <tr key={aparto.id}>
-              <td>{aparto.id}</td>
+            <tr key={index} className={(index % 2) ? "odd_col" : "even_col"}>
+              <td>
+              <input type="checkbox" className="selectsingle" value="{aparto.id}" checked={this.state.checkedBoxes.find((p) => p.id === aparto.id)} onChange={(e) => this.toggleCheckbox(e, aparto)}/>
+									  &nbsp;&nbsp;{aparto.id}
+              </td>
               <td>{aparto.numeroAparto}</td>
               <td>{aparto.mts2}</td>
-              <th>{aparto.finca_id}</th>
+              <td>{aparto.finca_id}</td>
               <td>
                 <Button
                   color="success"
@@ -219,13 +261,15 @@ export default class Aparto extends Component {
       } 
     return (
       <div className="App container mt-4">
-           <h4 className="font-weight-bold">Listado de Apartos</h4> 
+           <h4 className="font-weight-bold">Listado de Apartos</h4>
+
            <AddAparto
                 toggleNewApartoModal={this.toggleNewApartoModal}
                 newApartoModal={this.state.newApartoModal}
                 onChangeAddApartoHandler={this.onChangeAddApartoHandler}
                 addAparto={this.addAparto}
                 newApartoData={newApartoData}
+                deleteApartoCheck={this.deleteApartoCheck}
           />
           <EditAparto
                 toggleEditApartoModal={this.toggleEditApartoModal}
@@ -235,7 +279,7 @@ export default class Aparto extends Component {
                 editApartoData={editApartoData}
                 updateAparto={this.updateAparto}
           />
-        <Table>
+        <Table bordered size="sm" responsive>
           <thead>
             <tr>
               <th>#</th>
