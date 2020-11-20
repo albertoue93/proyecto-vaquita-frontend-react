@@ -43,7 +43,6 @@ class Login extends React.Component {
 			const token = response.data.token;
 			this.props.authenticate(token);
 			Alert.success("You're successfully logged in!");
-			this.props.history.push("/login");
 		})
 		.catch((error) => {
 			console.log(error);
@@ -55,11 +54,14 @@ class Login extends React.Component {
     }
     
     render() {
-		if (this.props.isAuthenticated && this.props.location.state !== undefined) {
-			return (
-				<Redirect to={this.props.location.state.from} />
-			);
-		}
+		const { from } = this.props.location.state || { from: { pathname: '/' } };
+        const { isAuthenticated } = this.props;
+
+        if (isAuthenticated) {
+            return (
+                <Redirect to={from}/>
+            )
+        }
 		return (
 			<div  className="login-container">
                 <div className="login-content">

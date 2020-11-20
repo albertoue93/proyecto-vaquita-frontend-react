@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from 'axios';
 import {
   Button,
   Modal,
@@ -11,12 +12,43 @@ import {
 } from "reactstrap";
 
 export default class addAnimal extends Component {
+  state = {
+    fincas: [],
+  }
+  componentDidMount(){
+    axios({
+      method: 'GET',
+      url: `http://localhost:8000/api/fincas`,
+      headers: {
+          "Authorization": "bearer "+localStorage.getItem('jwt')
+      }
+    })
+    .then((response) => {
+      this.setState({fincas: response.data.data})
+    })
+  }
     render() {
       return (
         <div>
+          <Button 
+            className="float-left mb-4"
+            color="danger"
+            size="sm" 
+            onClick={this.props.deleteAnimalCheck}>
+              Eliminar Animal(es) Seleccionado(s)
+          </Button>
+          
+          <Button
+            className="float-left mb-4"
+            color="warning"
+            size="sm" 
+            onClick={this.props.updateAnimalCheck}>
+              Cambiar Estado Seleccionado(s)
+          </Button>
           <Button
             className="float-right mb-4"
             color="primary"
+            size="sm"
             onClick={this.props.toggleNewAnimalModal}
           >
             Agregar Animal
@@ -66,7 +98,6 @@ export default class addAnimal extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                
                 <Label for="foto">Foto</Label>
                 <Input
                   id="foto"
@@ -77,12 +108,16 @@ export default class addAnimal extends Component {
               </FormGroup>
               <FormGroup>
                 <Label for="finca_id">Finca</Label>
-                <Input
+                <Input type="select"
                   id="finca_id"
                   name="finca_id"
                   value={this.props.newAnimalData.finca_id}
-                  onChange={this.props.onChangeAddAnimalHandler}
-                />
+                  onChange={this.props.onChangeAddAnimalHandler}>
+                  <option>Selecciones una Finca</option>
+                    {this.state.fincas.map(item=>(
+                      <option key={item.id} value={item.id}>{item.nombreFinca}</option>
+                    ))}
+                </Input>
               </FormGroup>
             </ModalBody>
             <ModalFooter>

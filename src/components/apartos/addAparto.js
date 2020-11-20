@@ -33,12 +33,14 @@ export default class addAparto extends Component {
           <Button 
             className="float-left mb-4"
             color="danger" 
+            size="sm"
             onClick={this.props.deleteApartoCheck}>
               Eliminar Aparto(s) Seleccionado(s)
           </Button>
           <Button
             className="float-right mb-4"
             color="primary"
+            size="sm"
             onClick={this.props.toggleNewApartoModal}
           >
             Agregar Aparto

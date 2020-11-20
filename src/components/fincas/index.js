@@ -35,7 +35,7 @@ export default class Finca extends Component {
             method: 'GET',
             url: `http://localhost:8000/api/fincas`,
             headers: {
-                "Authorization": "bearer "+localStorage.getItem('jwt')
+                "Authorization": "bearer "+this.props.token
             }
         })
     .then((response) => {
@@ -72,7 +72,7 @@ export default class Finca extends Component {
             method: 'POST',
             url: `http://localhost:8000/api/fincas/store`,
             headers: {
-                "Authorization": "bearer "+localStorage.getItem('jwt')
+                "Authorization": "bearer "+this.props.token
             }, 
             data : this.state.newFincaData
         })
@@ -125,7 +125,7 @@ export default class Finca extends Component {
           method: 'POST',
           url: `http://localhost:8000/api/fincas/store`,
           headers: {
-              "Authorization": "bearer "+localStorage.getItem('jwt')
+              "Authorization": "bearer "+this.props.token
           }, 
           data: {
             nombreFinca,id
@@ -154,7 +154,7 @@ export default class Finca extends Component {
             method: 'DELETE',
             url: `http://localhost:8000/api/fincas/delete/`+id,
             headers: {
-                "Authorization": "bearer "+localStorage.getItem('jwt')
+                "Authorization": "bearer "+this.props.token
             }
         })
           .then((response) => {
@@ -193,7 +193,7 @@ export default class Finca extends Component {
             url: `http://localhost:8000/api/fincas/bulk-delete/`,
             data: {'ids' : this.state.checkedBoxes},
             headers: {
-                "Authorization": "bearer "+localStorage.getItem('jwt')
+                "Authorization": "bearer "+this.props.token
             } 
         })
           .then((response) => {

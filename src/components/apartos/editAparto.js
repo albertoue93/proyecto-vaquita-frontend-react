@@ -43,9 +43,17 @@ export default class editAparto extends Component {
             <FormGroup>
               <Label for="finca_id">Finca</Label>
               <Input
+                type="hidden"
                 id="finca_id"
                 name="finca_id"
                 value={this.props.editApartoData.finca_id}
+                onChange={this.props.onChangeEditApartoHanler}
+              />
+              <Input
+                disabled
+                id="finca_id"
+                name="finca_id"
+                value={this.props.editApartoData.nombreFinca}
                 onChange={this.props.onChangeEditApartoHanler}
               />
             </FormGroup>

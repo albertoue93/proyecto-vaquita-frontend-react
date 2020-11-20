@@ -39,7 +39,7 @@ export default class Aparto extends Component {
             method: 'GET',
             url: `http://localhost:8000/api/aparto`,
             headers: {
-                "Authorization": "bearer "+localStorage.getItem('jwt')
+                "Authorization": "bearer "+this.props.token
             }
         })
     .then((response) => {
@@ -76,7 +76,7 @@ export default class Aparto extends Component {
             method: 'POST',
             url: `http://localhost:8000/api/aparto/store/`,
             headers: {
-                "Authorization": "bearer "+localStorage.getItem('jwt')
+                "Authorization": "bearer "+this.props.token
             }, 
             data : this.state.newApartoData
         })
@@ -112,9 +112,9 @@ export default class Aparto extends Component {
         this.setState({ editApartoData });
       };      
 
-      editAparto = (id, numeroAparto, mts2, finca_id) => {
+      editAparto = (id, numeroAparto, mts2, finca_id, nombreFinca) => {
         this.setState({
-          editApartoData: { id, numeroAparto, mts2, finca_id },
+          editApartoData: { id, numeroAparto, mts2, finca_id, nombreFinca },
           editApartoModal: !this.state.editApartoModal,
         });
       };
@@ -133,7 +133,7 @@ export default class Aparto extends Component {
           method: 'POST',
           url: `http://localhost:8000/api/aparto/store`,
           headers: {
-              "Authorization": "bearer "+localStorage.getItem('jwt')
+              "Authorization": "bearer "+this.props.token
           }, 
           data: {
             numeroAparto,mts2,finca_id,id
@@ -162,7 +162,7 @@ export default class Aparto extends Component {
             method: 'DELETE',
             url: `http://localhost:8000/api/aparto/delete/`+id,
             headers: {
-                "Authorization": "bearer "+localStorage.getItem('jwt')
+                "Authorization": "bearer "+this.props.token
             }
         })
           .then((response) => {
@@ -201,7 +201,7 @@ export default class Aparto extends Component {
             url: `http://localhost:8000/api/aparto/bulk-delete/`,
             data: {'ids' : this.state.checkedBoxes},
             headers: {
-                "Authorization": "bearer "+localStorage.getItem('jwt')
+                "Authorization": "bearer "+this.props.token
             } 
         })
           .then((response) => {
@@ -230,7 +230,7 @@ export default class Aparto extends Component {
               </td>
               <td>{aparto.numeroAparto}</td>
               <td>{aparto.mts2}</td>
-              <td>{aparto.finca_id}</td>
+              <td>{aparto.nombreFinca}</td>
               <td>
                 <Button
                   color="success"
@@ -241,7 +241,8 @@ export default class Aparto extends Component {
                       aparto.id,
                       aparto.numeroAparto,
                       aparto.mts2,
-                      aparto.finca_id
+                      aparto.finca_id,
+                      aparto.nombreFinca
                     )}
                 >
                   Editar

@@ -10,18 +10,19 @@ export default class Animal extends Component {
         super(props);
         this.state = {
             animales: [],
+            checkedBoxes: [],
             newAnimalData: {
               numeroAnimal: "",
               raza: "",
               peso: "",
               edad: "",
-              foto: "",
+              foto: null,
               finca_id: ""
             },
             isLoading: false,
             status: "",
             newAnimalModal: false,
-            editFincaData: {
+            editAnimalData: {
                 id: "",
               numeroAnimal: "",
               raza: "",
@@ -30,7 +31,7 @@ export default class Animal extends Component {
               foto: "",
               finca_id: ""
             },
-            editFincaModal: false,
+            editAnimalModal: false,
             noDataFound: "",
             imagePreviewUrl: false,
         }
@@ -38,6 +39,7 @@ export default class Animal extends Component {
 
     componentDidMount() {
         this.getAnimales();
+        this.setState({isLoading:false})
       }   
 
     getAnimales() {
@@ -45,7 +47,7 @@ export default class Animal extends Component {
             method: 'GET',
             url: `http://localhost:8000/api/animal`,
             headers: {
-                "Authorization": "bearer "+localStorage.getItem('jwt')
+                "Authorization": "bearer "+this.props.token
             }
         })
     .then((response) => {
@@ -97,7 +99,7 @@ export default class Animal extends Component {
             method: 'POST',
             url: `http://localhost:8000/api/animal/store/`,
             headers: {
-                "Authorization": "bearer "+localStorage.getItem('jwt')
+                "Authorization": "bearer "+this.props.token
             }, 
             data : this.state.newAnimalData
         })
@@ -132,7 +134,7 @@ export default class Animal extends Component {
             method: 'DELETE',
             url: `http://localhost:8000/api/animal/delete/`+id,
             headers: {
-                "Authorization": "bearer "+localStorage.getItem('jwt')
+                "Authorization": "bearer "+this.props.token
             }
         })
           .then((response) => {
@@ -148,25 +150,25 @@ export default class Animal extends Component {
             });
           });
       };
-      toggleEditFincaModal = () => {
+      toggleEditAnimalModal = () => {
         this.setState({
-          editFincaModal: !this.state.editFincaModal,
+          editAnimalModal: !this.state.editAnimalModal,
         });
       };
 
-      onChangeEditFincaHanler = (e) => {
-        let { editFincaData } = this.state;
-        editFincaData[e.target.name] = e.target.value;
-        this.setState({ editFincaData });
+      onChangeEditAnimalHanler = (e) => {
+        let { editAnimalData } = this.state;
+        editAnimalData[e.target.name] = e.target.value;
+        this.setState({ editAnimalData });
       };
-      editFinca = (id,numeroAnimal,raza,peso,edad,foto,finca_id) => {
+      editAnimal = (id,numeroAnimal,raza,peso,edad,foto,finca_id) => {
         this.setState({
-          editFincaData: { id,numeroAnimal,raza,peso,edad,foto,finca_id },
-          editFincaModal: !this.state.editFincaModal,
+          editAnimalData: { id,numeroAnimal,raza,peso,edad,foto,finca_id },
+          editAnimalModal: !this.state.editAnimalModal,
         });
       };
 
-      updateFinca = () => {
+      updateAnimal = () => {
         let {
           id,
           numeroAnimal,
@@ -176,7 +178,7 @@ export default class Animal extends Component {
           foto,
           finca_id,
 
-        } = this.state.editFincaData;
+        } = this.state.editAnimalData;
         this.setState({
           isLoading: true,
         });
@@ -184,7 +186,7 @@ export default class Animal extends Component {
           method: 'POST',
           url: `http://localhost:8000/api/animal/store`,
           headers: {
-              "Authorization": "bearer "+localStorage.getItem('jwt')
+              "Authorization": "bearer "+this.props.token
           }, 
           data: {
           numeroAnimal,
@@ -198,8 +200,8 @@ export default class Animal extends Component {
           })
           .then((response) => {
             this.setState({
-              editFincaModal: false,
-              editFincaData: {numeroAnimal,
+              editAnimalModal: false,
+              editAnimalData: {numeroAnimal,
                 raza,
                 peso,
                 edad,
@@ -208,36 +210,104 @@ export default class Animal extends Component {
               isLoading:false,
             });
             this.getAnimales();
-            Alert.success("Finca se modificó exitosamente!")
+            Alert.success(response.data.message)
           })
           .catch((error) => {
             this.setState({isLoading:false})
             console.log(error.response);
           });
       };
+
+      toggleCheckbox = (e, finca) => {		
+        if(e.target.checked) {
+          let arr = this.state.checkedBoxes;
+          arr.push(finca.id);
+          
+          this.setState = { checkedBoxes: arr};
+        } else {			
+          let fincas = this.state.checkedBoxes.splice(this.state.checkedBoxes.indexOf(finca.id), 1);
+          
+          this.setState = {
+            checkedBoxes: fincas
+          }
+        }		
+        console.log(this.state.checkedBoxes);
+      }
+
+      deleteAnimalCheck = async() => {
+        await axios({
+            method: 'DELETE',
+            url: `http://localhost:8000/api/animal/bulk-delete/`,
+            data: {'ids' : this.state.checkedBoxes},
+            headers: {
+                "Authorization": "bearer "+this.props.token
+            } 
+        })
+          .then((response) => {
+            if(response.status === 200) {
+            //this.getApartos()
+            window.location.reload(false);
+            }
+            Alert.error("Animal(es) se eliminó exitosamente!")
+          })
+          .catch((error) => {
+            console.log(error)
+            Alert.error("Debe seleccionar al menos un Animal")
+          });
+      };
+
+      updateAnimalCheck = async() => {
+        await axios({
+            method: 'PUT',
+            url: `http://localhost:8000/api/animal/updateStatus/`,
+            data: {'ids' : this.state.checkedBoxes},
+            headers: {
+                "Authorization": "bearer "+this.props.token
+            } 
+        })
+          .then((response) => {
+            if(response.status === 200) {
+            //this.getApartos()
+            window.location.reload(false);
+            }
+            Alert.error("Se cambió el estado exitosamente!")
+          })
+          .catch((error) => {
+            console.log(error)
+            Alert.error("Debe seleccionar al menos un Animal")
+          });
+      };
     
   render() {
-    const { newAnimalData,editFincaData, noDataFound, animales} = this.state;
+    const { newAnimalData,editAnimalData, noDataFound, animales} = this.state;
       let animalDetails = [];
       if (animales.length) {
-        animalDetails = animales.map((animal) => {
+        animalDetails = animales.map((animal, index) => {
           return (
-            <tr key={animal.id}>
-              <td>{animal.id}</td>
+            <tr key={index} className={(index % 2) ? "odd_col" : "even_col"}>
+              <td>
+              <input type="checkbox" className="selectsingle" value="{animal.id}" checked={this.state.checkedBoxes.find((p) => p.id === animal.id)} onChange={(e) => this.toggleCheckbox(e, animal)}/>
+									  &nbsp;&nbsp;{animal.id}
+              </td>
               <td>{animal.numeroAnimal}</td>
               <td>{animal.raza}</td>
-              <td>{animal.peso}</td>
+              <td>{animal.peso} kg</td>
               <td>{animal.edad}</td>
-              <td>{animal.foto}</td>
-              <td>{animal.finca_id}</td>
-              <td>{animal.estado}</td>
+              <td><img width="50" alt="img" src={animal.foto}/></td>
+              <td>{animal.nombreFinca}</td>
+              {
+                animal.estado === "en_finca"
+                ? <td>En Finca</td>
+                : <td>Vendido</td>
+              }
+              
               <td>
                 <Button
                   color="success"
                   className="mr-3"
                   size="sm"
                   onClick={() =>
-                    this.editFinca(
+                    this.editAnimal(
                       animal.id,
                       animal.numeroAnimal,
                       animal.raza,
@@ -249,7 +319,7 @@ export default class Animal extends Component {
                 >
                   Editar
                 </Button>
-                <Button color="danger" size="sm" onClick={() => this.deleteAnimal(animal.id)}>
+                <Button className="fas fa-edit" color="danger" size="sm" onClick={() => this.deleteAnimal(animal.id)}>
                   Eliminar
                 </Button>
               </td>
@@ -271,14 +341,16 @@ export default class Animal extends Component {
                 onChangeAddAnimalHandler={this.onChangeAddAnimalHandler}
                 addAnimal={this.addAnimal}
                 newAnimalData={newAnimalData}
+                deleteAnimalCheck={this.deleteAnimalCheck}
+                updateAnimalCheck={this.updateAnimalCheck}
           />
           <EditAnimal
-                toggleEditFincaModal={this.toggleEditFincaModal}
-                editFincaModal={this.state.editFincaModal}
-                onChangeEditFincaHanler={this.onChangeEditFincaHanler}
-                editFinca={this.editFinca}
-                editFincaData={editFincaData}
-                updateFinca={this.updateFinca}
+                toggleEditAnimalModal={this.toggleEditAnimalModal}
+                editAnimalModal={this.state.editAnimalModal}
+                onChangeEditAnimalHanler={this.onChangeEditAnimalHanler}
+                editAnimal={this.editAnimal}
+                editAnimalData={editAnimalData}
+                updateAnimal={this.updateAnimal}
           />
         <Table bordered size="sm" responsive>
           <thead>
