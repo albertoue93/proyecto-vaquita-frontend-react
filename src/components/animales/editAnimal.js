@@ -15,11 +15,11 @@ export default class editAnimal extends Component {
     return (
       <div>
         <Modal
-          isOpen={this.props.editFincaModal}
-          toggle={this.props.toggleEditFincaModal}
+          isOpen={this.props.editAnimalModal}
+          toggle={this.props.toggleEditAnimalModal}
         >
-          <ModalHeader toggle={this.props.toggleEditFincaModal}>
-            Editar Animal {this.props.editFincaData.raza}
+          <ModalHeader toggle={this.props.toggleEditAnimalModal}>
+            Editar Animal {this.props.editAnimalData.raza}
           </ModalHeader>
           <ModalBody>
 
@@ -28,17 +28,17 @@ export default class editAnimal extends Component {
               <Input
                 id="peso"
                 name="peso"
-                value={this.props.editFincaData.peso}
-                onChange={this.props.onChangeEditFincaHanler}
+                value={this.props.editAnimalData.peso}
+                onChange={this.props.onChangeEditAnimalHanler}
               />
             </FormGroup>
             <FormGroup>
-              <Label for="edad">Edad</Label>
+              <Label for="edad">Edad (Meses)</Label>
               <Input
                 id="edad"
                 name="edad"
-                value={this.props.editFincaData.edad}
-                onChange={this.props.onChangeEditFincaHanler}
+                value={this.props.editAnimalData.edad}
+                onChange={this.props.onChangeEditAnimalHanler}
               />
             </FormGroup>
             <FormGroup>
@@ -46,8 +46,8 @@ export default class editAnimal extends Component {
               <Input
                 id="foto"
                 name="foto"
-                value={this.props.editFincaData.foto}
-                onChange={this.props.onChangeEditFincaHanler}
+                value={this.props.editAnimalData.foto}
+                onChange={this.props.onChangeEditAnimalHanler}
               />
             </FormGroup>
             
@@ -55,13 +55,13 @@ export default class editAnimal extends Component {
           <ModalFooter>
             <Button 
               color="primary" 
-              onClick={() => this.props.updateFinca()}
+              onClick={() => this.props.updateAnimal()}
             >
               Editar
             </Button>
             <Button
               color="secondary"
-              onClick={this.props.toggleEditFincaModal}
+              onClick={this.props.toggleEditAnimalModal}
             >
               Cancel
             </Button>

@@ -17,12 +17,14 @@ export default class addFincas extends Component {
           <Button 
             className="float-left mb-4"
             color="danger" 
+            size="sm"
             onClick={this.props.deleteFincaCheck}>
               Eliminar Finca(s) Seleccionada(s)
           </Button>
           <Button
             className="float-right mb-4"
             color="primary"
+            size="sm"
             onClick={this.props.toggleNewFincaModal}
           >
             Agregar Finca
