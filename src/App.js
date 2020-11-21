@@ -10,6 +10,7 @@ import Login from './components/Login';
 import Finca from './components/fincas/index';
 import Animal from './components/animales/index';
 import Aparto from './components/apartos/index';
+import Historico from './components/historicos/index';
 import axios from 'axios';
 import * as PropTypes from 'prop-types'
 
@@ -72,6 +73,7 @@ class App extends React.Component {
             <PrivateRoute exact path='/finca' component={Finca} isAuthenticated={this.state.isAuthenticated} token={this.state.token} refresh={this.refresh} />
             <PrivateRoute exact path='/animal' component={Animal} isAuthenticated={this.state.isAuthenticated} token={this.state.token} refresh={this.refresh} />
             <PrivateRoute exact path='/aparto' component={Aparto} isAuthenticated={this.state.isAuthenticated} token={this.state.token} refresh={this.refresh} />
+            <PrivateRoute exact path='/historico' component={Historico} isAuthenticated={this.state.isAuthenticated} token={this.state.token} refresh={this.refresh} />
           </Switch>
         </div>
       </HashRouter>
@@ -121,7 +123,7 @@ const Menu = (props) => (
                   </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/">
+                <Link className="nav-link" to="/historico">
                   Historicos
                   </Link>
               </li>
