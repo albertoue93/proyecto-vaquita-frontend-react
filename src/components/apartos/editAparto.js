@@ -59,8 +59,8 @@ export default class editAparto extends Component {
             </FormGroup>
           </ModalBody>
           <ModalFooter>
-            <Button 
-              color="primary" 
+            <Button
+              color="primary"
               onClick={() => this.props.updateAparto()}
             >
               Editar

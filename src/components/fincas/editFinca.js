@@ -31,11 +31,11 @@ export default class editFinca extends Component {
                 onChange={this.props.onChangeEditFincaHanler}
               />
             </FormGroup>
-            
+
           </ModalBody>
           <ModalFooter>
-            <Button 
-              color="primary" 
+            <Button
+              color="primary"
               onClick={() => this.props.updateFinca()}
             >
               Editar
