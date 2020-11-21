@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import Alert from 'react-s-alert';
-import { Table, Button } from 'reactstrap'
+import { Table} from 'reactstrap'
 import axios from "axios";
 
 
@@ -133,7 +132,7 @@ export default class Historico extends Component {
           </thead>
           {animales.length === 0 ? (
             <tbody>
-              <h3>{}</h3>
+              <h3>{noDataFound}</h3>
             </tbody>
           ) : (
               <tbody>{animalDetails}</tbody>
