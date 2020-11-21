@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Table} from 'reactstrap'
 import axios from "axios";
+import ReactPaginate from "react-paginate";
 
 
 export default class Historico extends Component {
@@ -12,7 +13,10 @@ export default class Historico extends Component {
       isLoading: false,
       status: "",
       noDataFound: "",
-      busqueda:""
+      busqueda:"",
+      perPage: 10, 
+      currentPage: 0,
+      offset: 0
       
     }
   }
@@ -29,8 +33,11 @@ export default class Historico extends Component {
           if (response.status === 200) {
             this.setState({
               animales: response.data.data ? response.data.data : [],
-              animalBackup: response.data.data ? response.data.data : []
-            });
+              animalBackup: response.data.data ? response.data.data : [],
+              pageCount: Math.ceil(this.state.animales.length / this.state.perPage)
+            },()=>this.setElementsForCurrentPage()
+    
+            );
           }
           if (
             response.data.status === "failed" &&
@@ -41,9 +48,33 @@ export default class Historico extends Component {
             });
           }
         });
+
     this.getAnimales();
     this.setState({ isLoading: false })
   }
+  setElementsForCurrentPage() {
+    let elements = this.state.animales
+      .slice(this.state.offset, this.state.offset + this.state.perPage)
+      .map((animal, i) => {
+        return (
+          <tr key={i}>
+            <td>{animal.numeroAnimal}</td>
+            <td>{animal.raza}</td>
+            <td>{animal.peso} kg</td>
+            <td><img width="50" alt="img" src={animal.foto} /></td>
+            <td>{animal.updated_at}</td>
+          </tr>
+        );
+      });
+    this.setState({ elements: elements });
+  }
+  handlePageClick = animales => {
+    const selectedPage = animales.selected;
+    const offset = selectedPage * this.state.perPage;
+    this.setState({ currentPage: selectedPage, offset: offset }, () => {
+      this.setElementsForCurrentPage();
+    });
+  };
 
   getAnimales() {
     axios({
@@ -57,7 +88,9 @@ export default class Historico extends Component {
         if (response.status === 200) {
           this.setState({
             animales: response.data.data ? response.data.data : [],
-          });
+            animalBackup: response.data.data ? response.data.data : [],
+            pageCount: Math.ceil(this.state.animales.length / this.state.perPage)
+          },()=>this.setElementsForCurrentPage());
         }
         if (
           response.data.status === "failed" &&
@@ -93,6 +126,26 @@ export default class Historico extends Component {
     })
   }
   render() {
+    let paginationElement;
+    if (this.state.pageCount > 1) {
+      paginationElement = (
+        <ReactPaginate
+          previousLabel={"← Anterior"}
+          nextLabel={"Siguiente →"}
+          breakLabel={<span className="gap">...</span>}
+          pageCount={this.state.pageCount}
+          onPageChange={this.handlePageClick}
+          forcePage={this.state.currentPage}
+          containerClassName={"pagination justify-content-center"}
+          pageClassName={"page-link"}
+          previousClassName={"page-link"}
+          previousLinkClassName={"page-item"}
+          nextClassName={"page-link"}
+          nextLinkClassName={"page-item"}
+          disabledClassName={"disabled"}
+          activeClassName={"page-item active"}
+          activeLinkClassName={"page-link"}
+        />);}
     const { noDataFound, animales } = this.state;
     let animalDetails = [];
     if (animales.length) {
@@ -117,9 +170,11 @@ export default class Historico extends Component {
       <div className="App container mt-4">
         <h4 className="font-weight-bold">Listado de Animales Vendidos</h4>
         <div className="barraBusqueda">
-        <input class="form-control col-md-4" placeholder="buscar..."  value={this.state.busqueda} onChange={(busqueda) => this.filter(busqueda)}/>
+        <input className="form-control col-md-4" placeholder="buscar..."  value={this.state.busqueda} onChange={(busqueda) => this.filter(busqueda)}/>
           </div>
           <br></br>
+          {this.state.animales.length > 0 && (
+          <div>
         <Table bordered size="sm" responsive>
           <thead>
             <tr>
@@ -138,7 +193,11 @@ export default class Historico extends Component {
               <tbody>{animalDetails}</tbody>
             )}
         </Table>
+        <div>{paginationElement}</div>
       </div>
+       )}
+      </div>
+
     );
   }
 }
