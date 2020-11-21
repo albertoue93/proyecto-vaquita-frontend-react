@@ -50,11 +50,11 @@ export default class editAnimal extends Component {
                 onChange={this.props.onChangeEditAnimalHanler}
               />
             </FormGroup>
-            
+
           </ModalBody>
           <ModalFooter>
-            <Button 
-              color="primary" 
+            <Button
+              color="primary"
               onClick={() => this.props.updateAnimal()}
             >
               Editar
